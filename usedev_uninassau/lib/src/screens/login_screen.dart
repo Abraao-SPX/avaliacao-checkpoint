@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -20,7 +21,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _checkExistingSession());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _checkExistingSession(),
+    );
   }
 
   @override
@@ -111,20 +114,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text;
-
-    if (username.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Preencha usuário e senha.',
-            style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-          ),
-        ),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    final username = _usernameController.text.trim();
+    final password = _passwordController.text;
 
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
@@ -132,10 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await LoginService.instance.login(
-        username: username,
-        password: password,
-      );
+      await LoginService.instance.login(username: username, password: password);
 
       if (!context.mounted) return;
 
@@ -156,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            e.toString().replaceFirst('Exception: ', ''),
+            e.toString(),
             style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
           ),
           backgroundColor: Colors.red,
@@ -176,102 +168,117 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          children: [
-            Image.asset('assets/logo_usedev.png', height: 80),
-            const SizedBox(height: 24),
-            Text(
-              'LOGIN',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                fontFamily: GoogleFonts.orbitron().fontFamily,
-              ),
-            ),
-            const SizedBox(height: 40),
-            TextField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                hintText: 'Usuário',
-                hintStyle: TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: Colors.grey,
-                ),
-                prefixIcon: const Icon(Icons.person_outline),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Image.asset('assets/logo_usedev.png', height: 80),
+              const SizedBox(height: 24),
+              Text(
+                'LOGIN',
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: GoogleFonts.orbitron().fontFamily,
                 ),
               ),
-              style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                hintText: 'Senha',
-                hintStyle: TextStyle(
-                  fontFamily: GoogleFonts.poppins().fontFamily,
-                  color: Colors.grey,
-                ),
-                prefixIcon: const Icon(Icons.lock_outline),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-              ),
-              style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryPurple,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
+              const SizedBox(height: 40),
+              TextFormField(
+                controller: _usernameController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Preencha o nome de usuário.';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Usuário',
+                  hintStyle: TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: Colors.grey,
+                  ),
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
                   ),
                 ),
-                child: _isLoading
-                    ? const SizedBox(
-                        height: 22,
-                        width: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(
-                        'ENTRAR',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: GoogleFonts.poppins().fontFamily,
-                        ),
-                      ),
+                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Esqueceu sua senha?',
-              style: TextStyle(
-                color: Colors.grey,
-                fontFamily: GoogleFonts.poppins().fontFamily,
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Preencha a senha.';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Senha',
+                  hintStyle: TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                    color: Colors.grey,
+                  ),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                ),
+                style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
               ),
-            ),
-          ],
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _handleLogin,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryPurple,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 22,
+                          width: 22,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Text(
+                          'ENTRAR',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: GoogleFonts.poppins().fontFamily,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Esqueceu sua senha?',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontFamily: GoogleFonts.poppins().fontFamily,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

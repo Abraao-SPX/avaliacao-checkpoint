@@ -11,7 +11,6 @@ class SubscriptionSectionWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          spacing: 20,
           children: [
             Text(
               'Inscreva-se para ganhar descontos!',
@@ -22,6 +21,7 @@ class SubscriptionSectionWidget extends StatelessWidget {
                 fontFamily: GoogleFonts.orbitron().fontFamily,
               ),
             ),
+            const SizedBox(height: 20),
             Text(
               'Cadastre seu email, receba novidades e descontos imperdíveis antes de todo mundo!',
               textAlign: TextAlign.center,
@@ -30,6 +30,7 @@ class SubscriptionSectionWidget extends StatelessWidget {
                 fontFamily: GoogleFonts.poppins().fontFamily,
               ),
             ),
+            const SizedBox(height: 20),
             TextField(
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
@@ -40,6 +41,7 @@ class SubscriptionSectionWidget extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(

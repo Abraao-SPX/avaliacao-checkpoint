@@ -14,7 +14,6 @@ class HeroSectionWidget extends StatelessWidget {
         ),
       ),
       child: Column(
-        spacing: 20,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(

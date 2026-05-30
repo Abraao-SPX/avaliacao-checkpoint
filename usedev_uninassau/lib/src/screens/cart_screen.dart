@@ -95,6 +95,7 @@ class CartScreen extends StatelessWidget {
         builder: (context, _) {
           final items = CartService.instance.items;
 
+          // Se a lista estiver vazia (ausência de dados locais, sincronia instantanea)
           if (items.isEmpty) {
             return Center(
               child: Text(
@@ -259,6 +260,7 @@ class CartScreen extends StatelessWidget {
                             fontFamily: GoogleFonts.orbitron().fontFamily,
                           ),
                         ),
+                        // Evitando recálculo direto - usando a variável computada do singleton
                         Text(
                           PriceFormatter.formatBrl(CartService.instance.total),
                           style: TextStyle(

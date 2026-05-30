@@ -35,10 +35,10 @@ class _InitialScreenState extends State<InitialScreen> {
       appBar: const CustomAppBarWidget(),
       body: SingleChildScrollView(
         child: Column(
-          spacing: 20,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const HeroSectionWidget(),
+            const SizedBox(height: 20),
             Text(
               'Promos Especiais',
               textAlign: TextAlign.center,
@@ -48,13 +48,18 @@ class _InitialScreenState extends State<InitialScreen> {
                 fontFamily: GoogleFonts.orbitron().fontFamily,
               ),
             ),
+            const SizedBox(height: 20),
             FutureBuilder<List<ProductModel>>(
               future: _productsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Padding(
                     padding: EdgeInsets.all(40),
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF7B0BF7),
+                      ),
+                    ),
                   );
                 }
 
@@ -64,9 +69,7 @@ class _InitialScreenState extends State<InitialScreen> {
                     child: Column(
                       children: [
                         Text(
-                          snapshot.error
-                              .toString()
-                              .replaceFirst('Exception: ', ''),
+                          snapshot.error.toString(),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontFamily: GoogleFonts.poppins().fontFamily,
@@ -94,6 +97,7 @@ class _InitialScreenState extends State<InitialScreen> {
                 );
               },
             ),
+            const SizedBox(height: 20),
             const SubscriptionSectionWidget(),
           ],
         ),

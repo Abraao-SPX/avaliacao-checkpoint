@@ -4,6 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
+class AuthException implements Exception {
+  final String message;
+  AuthException(this.message);
+  @override
+  String toString() => message;
+}
+
 class LoginService {
   LoginService._();
 
@@ -32,19 +39,16 @@ class LoginService {
       response = await http.post(
         Uri.parse(_baseUrl),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'username': username,
-          'password': password,
-        }),
+        body: json.encode({'username': username, 'password': password}),
       );
     } catch (_) {
-      throw Exception('Falha na conexão. Verifique sua internet.');
+      throw AuthException('Falha na conexão. Verifique sua internet.');
     }
 
     // A Fake Store retorna 201 (Created) em login válido, não 200.
     final success = response.statusCode >= 200 && response.statusCode < 300;
     if (!success) {
-      throw Exception(
+      throw AuthException(
         'Usuário ou senha inválidos. Use: $testUsername / $testPassword',
       );
     }
