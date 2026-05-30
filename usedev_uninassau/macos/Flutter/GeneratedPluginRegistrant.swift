@@ -5,13 +5,8 @@
 import FlutterMacOS
 import Foundation
 
-<<<<<<< HEAD
-import flutter_secure_storage_darwin
+import flutter_secure_storage_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
-  FlutterSecureStorageDarwinPlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStorageDarwinPlugin"))
-=======
-
-func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
->>>>>>> df77ffb95b3ba01878b3f6e825463f3939b4921e
+  FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
 }
