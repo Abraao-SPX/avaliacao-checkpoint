@@ -40,13 +40,15 @@ class CartScreen extends StatelessWidget {
                 onPressed: () => Navigator.pop(dialogContext),
                 child: Text(
                   'CANCELAR',
-                  style: TextStyle(fontFamily: GoogleFonts.poppins().fontFamily),
+                  style: TextStyle(
+                    fontFamily: GoogleFonts.poppins().fontFamily,
+                  ),
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(dialogContext);
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute<void>(
                       builder: (context) => const LoginScreen(),
@@ -136,11 +138,13 @@ class CartScreen extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) =>
                                     Container(
-                                  width: 80,
-                                  height: 80,
-                                  color: Colors.grey.shade200,
-                                  child: const Icon(Icons.image_not_supported),
-                                ),
+                                      width: 80,
+                                      height: 80,
+                                      color: Colors.grey.shade200,
+                                      child: const Icon(
+                                        Icons.image_not_supported,
+                                      ),
+                                    ),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -202,11 +206,14 @@ class CartScreen extends StatelessWidget {
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete_outline,
-                                  color: Colors.red),
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.red,
+                              ),
                               onPressed: () {
-                                CartService.instance
-                                    .removeItem(item.product.id);
+                                CartService.instance.removeItem(
+                                  item.product.id,
+                                );
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
